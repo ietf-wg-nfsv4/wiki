@@ -1,0 +1,193 @@
+digraph {
+
+	rankdir = "LR"
+
+	node [shape=box]
+
+
+	/*
+
+		Edge colors:
+
+		black - obsoleted
+		violet - updates
+		coral - depends on
+
+	*/
+
+
+	// protocol version
+	subgraph NFS {
+
+		RFC1813 [label="1813: NFS Version 3 Protocol Specification\nNFS v3",fontname="opensans:bold",fontsize="20pt"]
+		RFC2623 [label="2623: NFS Version 2 and Version 3 Security Issues and the NFS Protocol's Use of RPCSEC_GSS and Kerberos V5"]
+		RFC3010 [label="3010: NFS version 4 Protocol", color=gray, style=filled]
+		RFC3530 [label="3530: Network File System (NFS) version 4 Protocol", color=gray, style=filled]
+		RFC5667 [label="5667: Network File System (NFS) Direct Data Placement", color=gray, style=filled]
+		RFC5666 [label="5666: Remote Direct Memory Access Transport for Remote Procedure Call", color=gray, style=filled]
+		RFC5664 [label="5664: Object-Based Parallel NFS (pNFS) Operations"]
+		//RFC5663 [label="5663: Parallel NFS (pNFS) Block/Volume Layout", color=gray, style=filled]
+		RFC5663 [label="5663: Parallel NFS (pNFS) Block/Volume Layout"]
+		RFC5662 [label="5662: Network File System (NFS) Version 4 Minor Version 1 External Data Representation Standard (XDR) Description"]
+		RFC5661 [label="5661: Network File System (NFS) Version 4 Minor Version 1 Protocol", color=gray, style=filled]
+		RFC7531 [label="7531: Network File System (NFS) Version 4 External Data Representation Standard (XDR) Description"]
+		RFC7530 [label="7530: Network File System (NFS) Version 4 Protocol\nNFS v4.0",fontname="opensans:bold",fontsize="20pt"]
+		RFC7569 [label="7569: Registry Specification for Mandatory Access Control (MAC) Security Label Formats"]
+		RFC7931 [label="7931: NFSv4.0 Migration: Specification Update"]
+		RFC7863 [label="7863: Network File System (NFS) Version 4 Minor Version 2 External Data Representation Standard (XDR) Description"]
+		RFC7862 [label="7862: Network File System (NFS) Version 4 Minor Version 2 Protocol\nNFS v4.2",fontname="opensans:bold",fontsize="20pt"]
+		RFC8178 [label="8178: Rules for NFSv4 Extensions and Minor Versions"]
+		RFC8267 [label="8267: Network File System (NFS) Upper-Layer Binding to RPC-over-RDMA Version 1"]
+		RFC8276 [label="8276: File System Extended Attributes in NFSv4"]
+		RFC8275 [label="8275: Allowing Inheritable NFSv4 Access Control Entries to Override the Umask"]
+		RFC8435 [label="8435: Parallel NFS (pNFS) Flexible File Layout"]
+		RFC8587 [label="8587: NFS Version 4.0 Trunking Update"]
+		RFC8881 [label="8881: Network File System (NFS) Version 4 Minor Version 1 Protocol\nNFS v4.1",fontname="opensans:bold",fontsize="20pt"]
+
+
+
+		RFC3010 -> RFC3530 [color=black]; // obsoleted
+		RFC3530 -> RFC7530 [color=black]; // obsoleted
+
+		RFC5661 -> RFC8881 [color=black]; // obsoleted, NFSv4.1
+		RFC5661 -> RFC8178 [color=violet]; // updated
+		RFC5661 -> RFC8434 [color=violet]; // updated
+		// RFC5662 // NFS4.1 XDR to RFC5661
+
+		// RFC5664 // pNFS v4.1 object store, this should have a more clear dependency to some v4.1 std, but doesn't?
+		RFC5663 -> RFC6688  [color=violet]; // updates
+
+		RFC5661 -> RFC5663 [color=coral, style=dotted]; // implicit
+		RFC5661 -> RFC8435 [color=coral, style=dotted]; // implicit
+
+		// RFC7204 // labeled NFS, v4.2
+		RFC5661 -> RFC7862 [color=coral]; // depends on
+		RFC5661 -> RFC5664 [color=coral]; // depend on
+
+
+		RFC7531 // XDR for NFS, obsoletes 3530
+		RFC7530 // NFS , obsoletes 3530 (v4.0 second try?!?!)
+
+		RFC7530 -> RFC7931 [color=violet]; // updates
+		RFC7530 -> RFC8587 [color=violet]; // updates
+
+		RFC7569 // registry spec for MAC labels
+
+
+		RFC7863 // NFSv4.2 XDR
+		RFC7862 // NFSv4.2
+
+		RFC7862 -> RFC8178 [color=violet]; // updates
+
+		RFC7931 // NFSv4.0 migration update, update to 7530
+
+		RFC8178 // NFS extensions procedures using compound
+
+		RFC8267 // xattr *extension*
+
+		RFC8275 // inheritable umask *extension*
+
+		RFC8435 // pNFS flex file layout *extension*
+
+		RFC8587 // updates 7530, trunking, NFSv4.0
+	}
+
+	// XDR
+	subgraph XDR {
+		RFC1832 [label="1832: XDR: External Data Representation Standard", color=gray, style=filled]
+
+		RFC4506 [label="4506: XDR: External Data Representation Standard"]
+
+		RFC1832 -> RFC4506
+
+		// RFC4506 // XDR language std
+		// RFC8881 // NFSv4.1, obsoletes 5661
+	}
+
+
+
+	// RPC
+	subgraph RPC {
+
+		node [color=teal,style=bold]
+
+		RFC5403 -> RFC7861 [color=violet]; // updated RPCSEC_GSS v2
+		RFC5531 -> RFC9289 [color=violet]; // updated RPC v2
+
+		RFC5666 -> RFC8166 [color=black]; // obsoleted, RPC over RDMA 
+		RFC5667 -> RFC8267 [color=black]; // obsoleted
+
+		RFC5403 [label="5403: RPCSEC_GSS Version 2"]
+		RFC5531 [label="5531: RPC: Remote Procedure Call Protocol Specification Version 2"]
+		RFC7861 [label="7861: Remote Procedure Call (RPC) Security Version 3"]
+		RFC8167 [label="8167: Bidirectional Remote Procedure Call on RPC-over-RDMA Transports"]
+		RFC8166 [label="8166: Remote Direct Memory Access Transport for Remote Procedure Call Version 1"]
+		RFC8797 [label="8797: Remote Direct Memory Access - Connection Manager (RDMA-CM) Private Data for RPC-over-RDMA Version 1"]
+		RFC9289 [label="9289: Towards Remote Procedure Call Encryption by Default"]
+
+		//RFC7861 // RPC SEC v3
+
+		//RFC8167 // bidir RPC over RDMA
+		//RFC8166 // RDMA for RPC v1
+
+		//RFC8797 // RDMA connection manager
+
+		//RFC9289 // RPC encryption
+
+	}
+
+	// I/O std
+	subgraph IOstd {
+		RFC6688 [label="6688: Parallel NFS (pNFS) Block Disk Protection"]
+		RFC8154 [label="8154: Parallel NFS (pNFS) Small Computer System Interface (SCSI) Layout"]
+		RFC9561 [label="9561: Using the Parallel NFS (pNFS) SCSI Layout to Access Non-Volatile Memory Express (NVMe) Storage Devices"]
+
+		//RFC6688 // pNFS block disk protection; updates 
+		//RFC8154 // pNFS SCSI layout
+		//RFC9561 // pNFS SCSI layout to NVMe
+	}
+
+
+	// requirements
+	subgraph REQUIREMENTS {
+
+		node [color=khaki,style=striped]
+
+
+		RFC2624 [label="2624: NFS Version 4 Design Considerations"]
+		RFC5532 [label="5532: Network File System (NFS) Remote Direct Memory Access (RDMA) Problem Statement"]
+		RFC5716 [label="5716: Requirements for Federated File Systems"]
+		RFC5665 [label="5665: IANA Considerations for Remote Procedure Call (RPC) Network Identifiers and Universal Address Formats"]
+		RFC7204 [label="7204: Requirements for Labeled NFS"]
+
+		//RFC2624 // NFSv4 design considerations
+		//RFC5532 // RDMA problem statement
+		//RFC5716 // requirements for federated file systems
+		//RFC5665 // update to RFC1833
+
+	}
+
+	// misc
+	subgraph MISC {
+
+
+		RFC6641 [label="6641: Using DNS SRV to Specify a Global File Namespace with NFS Version 4"]
+		RFC7533 [label="7533: Administration Protocol for Federated File Systems"]
+		RFC7532 [label="7532: Namespace Database (NSDB) Protocol for Federated File Systems"]
+		RFC8000 [label="8000: Requirements for NFSv4 Multi-Domain Namespace Deployment"]
+		RFC8434 [label="8434: Requirements for Parallel NFS (pNFS) Layout Types"]
+
+		//RFC6641 // DNS SRV record
+
+		//RFC7533 // admin protocol for FedFS
+		//RFC7532 // name space for FedFS
+
+		//RFC8000 // requirements for NFSv4 multi-domain namespace deployment
+
+		//RFC8434 // requirements for pNFS layout types
+
+	}
+
+
+}
+
